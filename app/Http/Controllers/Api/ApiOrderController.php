@@ -237,7 +237,7 @@ class ApiOrderController extends Controller
     }
 
 
-    $restaurant = Order::where('restaurant_id',$request->restaurant_id)->first();
+    $restaurant = Order::where(['restaurant_id',$request->restaurant_id])->first();
 
 
     if($restaurant){

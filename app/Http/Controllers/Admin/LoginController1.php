@@ -6,10 +6,11 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redirect;
 
-class LoginController extends Controller
+class LoginController1 extends Controller
 {
-    public function  getLogin(){
+    public function getLogin(){
 
         return view('Admin.auth.login');
     }
@@ -20,7 +21,7 @@ class LoginController extends Controller
 
         $remember_me = $request->has('remember_me') ? true : false;
 
-        if (Auth::guard('admins')->attempt(['email' => $request->input("email"), 'password' => $request->input("password")], $remember_me)) {
+        if (Auth::guard('res')->attempt(['email' => $request->input("email"), 'password' => $request->input("password")], $remember_me)) {
            // notify()->success('تم الدخول بنجاح  ');
             return redirect()->route('Admin');
         }

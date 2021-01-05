@@ -14,7 +14,7 @@
           <img src="http://127.0.0.1:8000/AdminLTE/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
-          <a href="{{ route('Admin') }}" class="d-block">{{ auth()->user()->name }}</a>
+          <a href="{{ route('Admin') }}" class="d-block">{{ auth('res')->user()->name }}</a>
         </div>
       </div>
 

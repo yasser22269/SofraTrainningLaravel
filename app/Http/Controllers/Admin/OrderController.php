@@ -18,31 +18,38 @@ class OrderController extends Controller
    */
   public function index()
   {
-      $donations = Order::paginate(CountPaginate);
+      $orders = Order::where('restaurant_id',auth('res')->user()->id)->whereIn('state',['pending','accepted','delivered'])->paginate(CountPaginate);
 
-    return view("Admin.donations.index",compact('donations'));
+    return view("Admin.orders.index",compact('orders'));
   }
 
 
 
   public function show($id)
   {
-    $donation = Order::findOrfail($id);
+    $order = Order::findOrfail($id);
 
-    return view("Admin.donations.show",compact('donation'));
+    return view("Admin.orders.show",compact('order'));
   }
 
-//   public function destroy($id)
-//   {
-//     $donation = Order::findOrfail($id);
-//  //  $notifications = Notification::where('Order_id', $id)->get();
-//   //  $notifications->delete();
-//    // $donation->notifications->delete();
-//     $donation->delete();
+  public function Orderaccepted($id)
+  {
+    $Order = Order::findOrfail($id);
 
-//     session()->flash('success', 'donation was successful Deleted!');
-//     return back();
-//   }
+    $Order->state = "accepted";
+    $Order->save();
+    session()->flash('success', 'Order was successful accepted!');
+    return back();
+  }
+  public function delivered($id)
+  {
+    $Order = Order::findOrfail($id);
+
+    $Order->state = "delivered";
+    $Order->save();
+    session()->flash('success', 'Order was successful delivered!');
+    return back();
+  }
 
 }
 

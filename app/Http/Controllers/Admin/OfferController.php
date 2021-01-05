@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\Order;
+use App\Http\Requests\OfferRequest;
+use App\Models\Offer;
 use App\Models\Notification;
+use Carbon\Carbon;
 
 class OfferController extends Controller
 {
@@ -18,31 +20,62 @@ class OfferController extends Controller
    */
   public function index()
   {
-      $donations = Order::paginate(CountPaginate);
-
-    return view("Admin.donations.index",compact('donations'));
+      $offers = Offer::where('restaurant_id',auth('res')->user()->id)->paginate(CountPaginate);
+      return view("Admin.offer.index",compact('offers'));
   }
 
-
-
-  public function show($id)
+  public function create()
   {
-    $donation = Order::findOrfail($id);
-
-    return view("Admin.donations.show",compact('donation'));
+    return view("Admin.offer.create");
   }
 
-//   public function destroy($id)
-//   {
-//     $donation = Order::findOrfail($id);
-//  //  $notifications = Notification::where('Order_id', $id)->get();
-//   //  $notifications->delete();
-//    // $donation->notifications->delete();
-//     $donation->delete();
+  /**
+   * Store a newly created resource in storage.
+   *
+   * @return Response
+   */
+  public function store(OfferRequest $request)
+  {
+    $requestArray =  $request->except('Photo','from','to');
+   // dd($requestArray);
 
-//     session()->flash('success', 'donation was successful Deleted!');
-//     return back();
+    $fileName = "";
+    if($request->hasFile('Photo')){
+        $file = $request->file('Photo');
+            $fileName = time().'.'. $file->getClientOriginalExtension();
+            $file->move(public_path('Photos/Offer/') , $fileName);
+      $requestArray +=  ['Photo' => $fileName];
+    }else{
+      $requestArray +=  ['Photo' => "defualt.png"];
+
+    }
+    $from =  Carbon::parse($request->from);
+    $requestArray +=  ['from' => $from ];
+    $to =  Carbon::parse($request->to);
+    $requestArray +=  ['to' => $to ];
+
+  //   return $requestArray;
+   //  dd($requestArray);
+    Offer::create($requestArray);
+
+   $request->session()->flash('success', 'Offer was successful added!');
+   return redirect()->route('Admin.offers.index');
+  }
+
+//   public function show($id)
+//   {
+//     $offer = Offer::findOrfail($id);
+
+//     return view("Admin.offer.show",compact('offer'));
 //   }
+
+  public function destroy($id)
+  {
+    $offer = offer::findOrfail($id);
+    $offer->delete();
+    session()->flash('success', 'offer was successful Deleted!');
+    return back();
+  }
 
 }
 

@@ -11,6 +11,7 @@ use App\Models\Donation_Reguest;
 use App\Models\Order;
 use App\Models\Post;
 use App\Models\Product;
+use App\Models\Restaurant;
 use App\User;
 use Illuminate\Support\Facades\Auth;
 
@@ -31,7 +32,7 @@ class AdminHomeController extends Controller
 
     public function changePassword()
     {
-        $admin =Client::where('id',Auth()->user()->id)->first();
+        $admin =Restaurant::where('id',Auth('res')->user()->id)->first();
 
         return view("Admin.changePassword.edit",compact('admin'));
 
@@ -39,7 +40,7 @@ class AdminHomeController extends Controller
 
     public function changePasswordupdate(Request $request)
     {
-        $User = Client::where('id',$request->id)->first();
+        $User = Restaurant::where('id',$request->id)->first();
         $requestArray = $request->all();
 
      if(isset($requestArray['password']) && $requestArray['password'] != ''){
@@ -49,7 +50,7 @@ class AdminHomeController extends Controller
       }
       $User->update(($requestArray));
 
-      $admin =Client::where('id',Auth()->user()->id)->first();
+      $admin =Restaurant::where('id',Auth('res')->user()->id)->first();
       $request->session()->flash('success', 'admin was successful Edited!');
         return view("Admin.changePassword.edit",compact('admin'));
 

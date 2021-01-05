@@ -5,9 +5,8 @@ namespace App\Http\Middleware;
 use App\Providers\RouteServiceProvider;
 use Closure;
 use Illuminate\Support\Facades\Request;
-use Illuminate\Auth\Middleware\Authenticate as Middleware;
 
-class ActiveAuth extends Middleware
+class ActiveAuth
 {
     /**
      * Handle an incoming request.
@@ -18,12 +17,12 @@ class ActiveAuth extends Middleware
      */
     public function handle($request, Closure $next)
     {
-
-        if (( Request::is('Admin') ||  Request::is('Admin/*') )&& auth()->user()->active_Admin == 1)
-             return $next($request);
+        //return redirect()->route('Admin');
+         //return redirect(RouteServiceProvider::ADMIN);
+        if (( Request::is('Admin') ||  Request::is('Admin/*') ) && auth('res')->check())
+              return $next($request);
         else
-        return redirect(RouteServiceProvider::HOME);
-
+            return redirect()->route('get.admin.login');
 
 
     }

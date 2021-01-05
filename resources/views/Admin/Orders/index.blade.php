@@ -1,6 +1,6 @@
 @extends('Admin.layouts.app')
 
-@section('title', 'donation Home')
+@section('title', 'order Home')
 
 @section('content')
 <!-- Content Header (Page header) -->
@@ -8,12 +8,12 @@
   <div class="container-fluid">
     <div class="row mb-2">
       <div class="col-sm-6">
-        <h1 class="m-0 text-dark">التبرعات</h1>
+        <h1 class="m-0 text-dark">الطلبات</h1>
       </div><!-- /.col -->
       <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
           <li class="breadcrumb-item"><a href="{{ route('Admin') }}">الرئيسة</a></li>
-          <li class="breadcrumb-item active">التبرعات</li>
+          <li class="breadcrumb-item active">الطلبات</li>
         </ol>
       </div><!-- /.col -->
     </div><!-- /.row -->
@@ -32,48 +32,56 @@
                 <thead>
                   <tr>
                     <th>ID</th>
-                    <th>Name</th>
-                    <th>Phone</th>
-                    <th>age</th>
-                    <th>hospital_address</th>
+                    <th>total_price</th>
                     <th>notes</th>
-                    <th>bags_num</th>
-                    <th>Client Name</th>
-                    <th>blood Type</th>
-                    <th>city</th>
+                    <th>Special_order</th>
+                    <th>client Name</th>
+                    <th>payment</th>
+                    <th>state</th>
                     <th>control</th>
                   </tr>
                 </thead>
                 <tbody>
-                    @foreach ($donations as $donation)
+                    @foreach ($orders as $order)
 
 
 
 
                   <tr>
-                    <td>{{  $donation->id}}</td>
-                    <td>{{  $donation->name}}</td>
-                    <td>{{  $donation->phone}}</td>
-                    <td>{{  $donation->age}}</td>
-                    <td>
-                        {{ $donation->hospital_address}}
-
-                    </td>
-                    <td> {{  $donation->notes }}</td>
-                    <td> {{  $donation->bags_num }}</td>
-                    <td> {{  $donation->client->name }}</td>
-                    <td> {{  $donation->blood_type->name }}</td>
-                    <td> {{  $donation->city->name }}</td>
+                    <td>{{  $order->id}}</td>
+                    <td>{{  $order->total_price}}</td>
+                    <td>{{  isset($order->notes)? $order->notes : "--"}}</td>
+                    <td>{{ isset($order->Special_order)? $order->Special_order : "--"}}</td>
+                    <td> {{  $order->client->name }}</td>
+                    <td> {{  $order->payment->name }}</td>
+                    <td> {{  $order->state }}</td>
                     <td class="td-actions ">
-                    <a href="{{ route('Admin.donation_reguest.show',$donation->id) }}">
-                        <button type="button" rel="tooltip" title="" class="btn btn-primary" data-original-title="show User">
+                        @if($order->state == "pending")
+
+                        <a href="{{ route('Admin.Orders.accepted',$order->id) }}">
+                            <button type="button" rel="tooltip" title="" class="btn btn-success" data-original-title="accepted order">
+                                <i class="material-icons">accepted</i>
+                              </button>
+                        </a>
+                        @endif
+
+                        @if($order->state != "delivered")
+                        <a href="{{ route('Admin.Orders.delivered',$order->id) }}">
+                            <button type="button" rel="tooltip" title="" class="btn btn-dark" data-original-title="delivered order">
+                                <i class="material-icons">delivered</i>
+                              </button>
+                        </a>
+                        @endif
+
+                    <a href="{{ route('Admin.Orders.show',$order->id) }}">
+                        <button type="button" rel="tooltip" title="" class="btn btn-primary" data-original-title="show order">
                             <i class="material-icons">show</i>
                           </button>
                     </a>
-                        {{-- <form action="{{ route('Admin.donation_reguest.destroy',$donation->id) }}" method="post" style="display: inline-block;">
+                        {{-- <form action="{{ route('Admin.order_reguest.destroy',$order->id) }}" method="post" style="display: inline-block;">
                             {{ csrf_field() }}
                             {{ method_field('DELETE') }}
-                        <button  type="submit" rel="tooltip" title="" class="btn btn-danger" data-original-title="Remove User">
+                        <button  type="submit" rel="tooltip" title="" class="btn btn-danger" data-original-title="Remove order">
                           <i class="material-icons">Delete</i>
                         </button>
                         </form> --}}
@@ -87,7 +95,7 @@
 
               </table>
               <div class="text-center">
-              {{ $donations->links() }}
+              {{ $orders->links() }}
               </div>
 
             </div>

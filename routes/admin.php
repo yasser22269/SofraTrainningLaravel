@@ -7,12 +7,12 @@ use Illuminate\Support\Facades\Route;
 
 
 
-// Route::group(['namespace'=>'Admin','prefix' => 'Admin','middleware' => 'guest:admins'], function(){
-//         Route::get('slogin' ,'LoginController@getLogin')->name('get.admin.login');
-//         Route::post('slogin' ,'LoginController@login')->name('admin.login');
-// });
+Route::group(['namespace'=>'Admin','prefix' => 'Admin','middleware' => ['guest:res']], function(){
+        Route::get('login' ,'LoginController1@getLogin')->name('get.admin.login');
+        Route::post('login' ,'LoginController1@login')->name('admin.login');
+});
 
-Route::group(['namespace' => 'Admin','prefix' => 'Admin' ],function () {
+Route::group(['namespace' => 'Admin','prefix' => 'Admin','middleware' =>['ActiveAuth'] ],function () {
                                                     //,'middleware' =>['auth','ActiveAuth']
 
     Route::get('/', 'AdminHomeController@index')->name('Admin');
@@ -29,7 +29,10 @@ Route::group(['namespace' => 'Admin','prefix' => 'Admin' ],function () {
 
       Route::resource('products', 'ProductController', array("as"=>"Admin"));
       Route::resource('offers', 'OfferController', array("as"=>"Admin"));
+
       Route::resource('Orders', 'OrderController', array("as"=>"Admin"));
+     Route::get('Orderaccepted/{id}', 'OrderController@Orderaccepted')->name('Admin.Orders.accepted');
+     Route::get('delivered/{id}', 'OrderController@delivered')->name('Admin.Orders.delivered');
 
      //Start changePassword
      Route::get('changePassword', 'AdminHomeController@changePassword')->name('Admin.changePasswordindex');
